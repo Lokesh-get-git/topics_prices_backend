@@ -3,13 +3,13 @@ from typing import Optional
 
 class PriceCalculationInput(BaseModel):
     topic_id: int
-    interview_type: str  # "one_on_one", "one_way_ai", "one_way_template"
+    interview_type: str  
     experience_level_id: int
-    duration_mins: Optional[int] = None  # required for one_on_one
+    duration_mins: Optional[int] = None  
 
 class PriceCalculationOutput(BaseModel):
-    domestic_price: float  # in rupees
-    international_price: float  # in dollars
-    adjustment_percentage: Optional[float] = None  # only if premium
+    domestic_price: float  
+    international_price: float  
+    adjustment_percentage: Optional[float] = None
     final_domestic: float
     final_international: float
