@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 from typing import Optional
+from schemas.enums import InterviewTypeEnum
+
 
 class PriceCalculationInput(BaseModel):
     topic_id: int
-    interview_type: str  
+    interview_type: InterviewTypeEnum  
     experience_level_id: int
     duration_mins: Optional[int] = None  
 

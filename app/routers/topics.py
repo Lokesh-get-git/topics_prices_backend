@@ -1,6 +1,8 @@
 from typing import Union
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from typing import Literal
+
 
 from db import get_db
 import models
@@ -8,53 +10,86 @@ from schemas import topics as schemas
 
 router = APIRouter(prefix="/topics", tags=["topics"])
 
+def get_or_create_display_name(db: Session, name: str):
+    dn = db.query(models.topics.DisplayName).filter_by(name=name).first()
+    if not dn:
+        dn = models.topics.DisplayName(name=name)
+        db.add(dn)
+        db.flush()
+    return dn
+
+
+def get_or_create_keyword(db: Session, keyword: str):
+    kw = db.query(models.topics.Keyword).filter_by(keyword=keyword).first()
+    if not kw:
+        kw = models.topics.Keyword(keyword=keyword)
+        db.add(kw)
+        db.flush()
+    return kw
+
 
 @router.get("/", response_model=list[schemas.TopicListOut])
-def list_topics(
-    published: Union[bool, None] = Query(None),
-    db: Session = Depends(get_db),
+def list_topics(published: Union[bool, None] = Query(None),
+db: Session = Depends(get_db),
 ):
     query = db.query(models.Topic)
     if published is not None:
         query = query.filter(models.Topic.published == published)
-    topics = query.all()
-    return topics
+    return query.all()
 
 
 @router.get("/{topic_id}", response_model=schemas.TopicOut)
 def get_topic(topic_id: int, db: Session = Depends(get_db)):
-    topic = (
-        db.query(models.Topic).filter(models.Topic.id == topic_id).first()
-    )
+    topic = db.query(models.Topic).filter(models.Topic.id == topic_id).first()
     if not topic:
         raise HTTPException(status_code=404, detail="Topic not found")
-    return topic
+    topic_ranges = topic.experience_ranges
+
+    if not topic_ranges:
+        topic.experience_type = "any"
+        topic.available_experience_ranges = []
+        
+    else:
+        topic.experience_type = "specific"
+        topic.available_experience_ranges = []
+        for r in topic_ranges:
+            topic.available_experience_ranges.append(r.experience_range)
+
+    return {
+        "id": topic.id,
+        "code": topic.code,
+        "classification": topic.classification,
+        "description": topic.description,
+        "published": topic.published,
+        "created_at": topic.created_at,
+        "updated_at": topic.updated_at,
+        "display_names": topic.display_names,
+        "keywords": topic.keywords,
+        "experience_type": topic.experience_type,
+        "available_experience_ranges": topic.available_experience_ranges
+    }
 
 
 @router.post("/", response_model=schemas.TopicOut, status_code=201)
 def create_topic(payload: schemas.TopicCreate, db: Session = Depends(get_db)):
     topic = models.Topic(
         code=payload.code,
-        classification=payload.classification,
+        classification=payload.classification.value,
         description=payload.description,
         published=payload.published,
     )
+
     db.add(topic)
     db.flush()
 
     for dn in payload.display_names:
-        db.add(
-            models.TopicDisplayName(
-                topic_id=topic.id,
-                name=dn.name,
-            )
+        topic.display_names.append(
+            get_or_create_display_name(db, dn.name)
         )
+
     for kw in payload.keywords:
-        db.add(
-            models.TopicKeyword(
-                topic_id=topic.id,
-                keyword=kw.keyword,
-            )
+        topic.keywords.append(
+            get_or_create_keyword(db, kw.keyword)
         )
 
     db.commit()
@@ -68,9 +103,7 @@ def update_topic(
     payload: schemas.TopicUpdate,
     db: Session = Depends(get_db),
 ):
-    topic = (
-        db.query(models.Topic).filter(models.Topic.id == topic_id).first()
-    )
+    topic = db.query(models.Topic).filter(models.Topic.id == topic_id).first()
     if not topic:
         raise HTTPException(status_code=404, detail="Topic not found")
 
@@ -78,30 +111,24 @@ def update_topic(
 
     for field in ["classification", "description", "published"]:
         if field in data:
-            setattr(topic, field, data[field])
+            value = data[field]
+            if field == "classification":
+                value = value.value
+            setattr(topic, field, value)
+
 
     if "display_names" in data and data["display_names"] is not None:
-        db.query(models.TopicDisplayName).filter(
-            models.TopicDisplayName.topic_id == topic.id
-        ).delete()
+        topic.display_names.clear()
         for dn in data["display_names"]:
-            db.add(
-                models.TopicDisplayName(
-                    topic_id=topic.id,
-                    name=dn["name"],
-                )
+            topic.display_names.append(
+                get_or_create_display_name(db, dn["name"])
             )
 
     if "keywords" in data and data["keywords"] is not None:
-        db.query(models.TopicKeyword).filter(
-            models.TopicKeyword.topic_id == topic.id
-        ).delete()
+        topic.keywords.clear()
         for kw in data["keywords"]:
-            db.add(
-                models.TopicKeyword(
-                    topic_id=topic.id,
-                    keyword=kw["keyword"],
-                )
+            topic.keywords.append(
+                get_or_create_keyword(db, kw["keyword"])
             )
 
     db.commit()

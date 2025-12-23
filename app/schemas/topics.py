@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Literal
 from datetime import datetime
-
+from schemas.enums import ClassificationEnum
+from schemas.experience import ExperienceRangeOut
 class TopicDisplayNameCreate(BaseModel):
     name: str
 
@@ -18,14 +19,14 @@ class TopicKeywordOut(BaseModel):
 
 class TopicCreate(BaseModel):
     code: str
-    classification: str
+    classification: ClassificationEnum
     description: str
     published: bool = False
     display_names: List[TopicDisplayNameCreate]
     keywords: List[TopicKeywordCreate]
 
 class TopicUpdate(BaseModel):
-    classification: Optional[str] = None
+    classification: Optional[ClassificationEnum] = None
     description: Optional[str] = None
     published: Optional[bool] = None
     display_names: Optional[List[TopicDisplayNameCreate]] = None
@@ -34,13 +35,16 @@ class TopicUpdate(BaseModel):
 class TopicOut(BaseModel):
     id: int
     code: str
-    classification: str
+    classification: ClassificationEnum
     description: str
     published: bool
     created_at: datetime
     updated_at: datetime
     display_names: List[TopicDisplayNameOut]
     keywords: List[TopicKeywordOut]
+    experience_type: Literal["any", "specific"]="any"
+    available_experience_ranges: list[ExperienceRangeOut]=[]
+
 
     class Config:
         from_attributes = True
@@ -48,7 +52,7 @@ class TopicOut(BaseModel):
 class TopicListOut(BaseModel):
     id: int
     code: str
-    classification: str
+    classification: ClassificationEnum
     display_names: List[TopicDisplayNameOut]
     published: bool
 
