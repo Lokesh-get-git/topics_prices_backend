@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 
-from db import get_db
-import models
-from schemas.experience import (
+from app.db import get_db
+from app import models
+from app.schemas.experience import (
     ExperienceRangeOut,
     TopicExperienceRangesUpdate,
     TopicExperienceRangeOut,

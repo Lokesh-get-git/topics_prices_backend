@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-from schemas.enums import ClassificationEnum,InterviewTypeEnum
+from app.schemas.enums import ClassificationEnum,InterviewTypeEnum
 class BasePricingCellOut(BaseModel):
     duration_mins: Optional[int] = None
     domestic_price: float

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime,ForeignKey, func
 from sqlalchemy.orm import relationship
-from db import Base
+from app.db import Base
 
 
 class Topic(Base):

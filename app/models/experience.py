@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, func
 from sqlalchemy.orm import relationship
-from db import Base
+from app.db import Base
 
 class ExperienceRange(Base):
     __tablename__ = "experience_ranges"

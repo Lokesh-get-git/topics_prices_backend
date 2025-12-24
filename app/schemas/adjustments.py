@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from schemas.enums import InterviewTypeEnum
+from app.schemas.enums import InterviewTypeEnum
 
 
 class AdjustmentOut(BaseModel):

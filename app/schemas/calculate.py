@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from schemas.enums import InterviewTypeEnum
+from app.schemas.enums import InterviewTypeEnum
 
 
 class PriceCalculationInput(BaseModel):

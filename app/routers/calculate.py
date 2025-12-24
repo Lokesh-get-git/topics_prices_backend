@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from db import get_db
-import models
-from schemas.calculate import (
+from app.db import get_db
+from app import models
+from app.schemas.calculate import (
     PriceCalculationInput,
     PriceCalculationOutput,
 )

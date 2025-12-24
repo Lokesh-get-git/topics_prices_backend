@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import List, Optional, Literal
 from datetime import datetime
-from schemas.enums import ClassificationEnum
-from schemas.experience import ExperienceRangeOut
+from app.schemas.enums import ClassificationEnum
+from app.schemas.experience import ExperienceRangeOut
 class TopicDisplayNameCreate(BaseModel):
     name: str
 

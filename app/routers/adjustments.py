@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from decimal import Decimal
-from schemas import enums
+from app.schemas import enums
  
-from db import get_db
-import models
-from schemas.adjustments import (
+from app.db import get_db
+from app import models
+from app.schemas.adjustments import (
     AdjustmentCreate,
     TopicAdjustmentsOut,
 )

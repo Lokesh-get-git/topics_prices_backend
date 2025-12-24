@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from typing import Literal
 
 
-from db import get_db
-import models
-from schemas import topics as schemas
+from app.db import get_db
+from app import models
+from app.schemas import topics as schemas
 
 router = APIRouter(prefix="/topics", tags=["topics"])
 

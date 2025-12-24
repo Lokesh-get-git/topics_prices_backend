@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
-from db import Base
+from app.db import Base
 
 class PremiumTopicAdjustment(Base):
     __tablename__ = "premium_topic_adjustments"

@@ -1,6 +1,6 @@
 
 from fastapi import FastAPI
-from routers import topics, experience, pricing, adjustments, calculate
+from app.routers import topics, experience, pricing, adjustments, calculate
 
 app = FastAPI(title="Topics And Pricing API")
 
