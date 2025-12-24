@@ -35,7 +35,7 @@ def update_topic_experience_ranges(
     db.query(models.TopicExperienceRange).filter(
         models.TopicExperienceRange.topic_id == topic_id
     ).delete()
-
+    
     rows = []
     for exp_id in payload.experience_range_ids:
         exp=db.query(models.ExperienceRange).filter(models.ExperienceRange.id==exp_id).first()

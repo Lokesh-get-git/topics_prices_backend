@@ -37,7 +37,6 @@ db: Session = Depends(get_db),
         query = query.filter(models.Topic.published == published)
     return query.all()
 
-
 @router.get("/{topic_id}", response_model=schemas.TopicOut)
 def get_topic(topic_id: int, db: Session = Depends(get_db)):
     topic = db.query(models.Topic).filter(models.Topic.id == topic_id).first()
@@ -68,6 +67,7 @@ def get_topic(topic_id: int, db: Session = Depends(get_db)):
         "experience_type": topic.experience_type,
         "available_experience_ranges": topic.available_experience_ranges
     }
+
 
 
 @router.post("/", response_model=schemas.TopicOut, status_code=201)
