@@ -69,8 +69,7 @@ docker ps
 
 6️ Create database tables (one-time)
 
-Run once after DB is running:
-python app/createtableonce.py
+alembic upgrade head
 
 IMPORTANT: Experience ranges must be inserted manually after this step.
 

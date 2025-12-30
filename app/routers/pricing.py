@@ -11,14 +11,14 @@ from app.schemas.pricing import (
 
 router = APIRouter(prefix="/pricing", tags=["pricing"])
 
-@router.put("/")
+@router.put("/") 
 def update_pricing_table(
     classification: enums.ClassificationEnum,
     interview_type: enums.InterviewTypeEnum,
     payload: list[BasePricingCellUpdate],
     db: Session = Depends(get_db),
 ):
-    for cell in payload:
+    for cell in payload:    
         row = (
             db.query(models.BasePricing)
             .filter(

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime,ForeignKey, func
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 from app.db import Base
 
@@ -11,35 +12,22 @@ class Topic(Base):
     classification = Column(String(20), nullable=False)
     description = Column(Text, nullable=False)
     published = Column(Boolean, default=False)
+
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-
-    display_names = relationship(
-        "DisplayName",
-        secondary="topic_display_names",
-        back_populates="topics"
-    )
+    display_names = Column(ARRAY(String), nullable=False)
 
     keywords = relationship(
         "Keyword",
         secondary="topic_keywords",
-        back_populates="topics"
+        back_populates="topics",
+        passive_deletes=True
     )
 
-    experience_ranges = relationship("TopicExperienceRange", back_populates="topic", cascade="all, delete-orphan")
-    adjustments = relationship("PremiumTopicAdjustment", back_populates="topic", cascade="all, delete-orphan")
+    experience_ranges = relationship("TopicExperienceRange", back_populates="topic", cascade="all, delete-orphan",passive_deletes=True)
+    
+    adjustments = relationship("PremiumTopicAdjustment", back_populates="topic", cascade="all, delete-orphan",passive_deletes=True)
 
-class DisplayName(Base):
-    __tablename__ = "display_names"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), unique=True, nullable=False)
-
-    topics = relationship(
-        "Topic",
-        secondary="topic_display_names",
-        back_populates="display_names"
-    )
 
 class Keyword(Base):
     __tablename__ = "keywords"
@@ -52,23 +40,6 @@ class Keyword(Base):
         secondary="topic_keywords",
         back_populates="keywords"
     )
-
-
-class TopicDisplayName(Base):
-    __tablename__ = "topic_display_names"
-
-    topic_id = Column(
-        Integer,
-        ForeignKey("topics.id", ondelete="CASCADE"),
-        primary_key=True
-    )
-    display_name_id = Column(
-        Integer,
-        ForeignKey("display_names.id", ondelete="CASCADE"),
-        primary_key=True
-    )
-
-
 
 class TopicKeyword(Base):
     __tablename__ = "topic_keywords"

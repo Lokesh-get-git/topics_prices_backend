@@ -10,13 +10,6 @@ from app.schemas import topics as schemas
 
 router = APIRouter(prefix="/topics", tags=["topics"])
 
-def get_or_create_display_name(db: Session, name: str):
-    dn = db.query(models.topics.DisplayName).filter_by(name=name).first()
-    if not dn:
-        dn = models.topics.DisplayName(name=name)
-        db.add(dn)
-        db.flush()
-    return dn
 
 
 def get_or_create_keyword(db: Session, keyword: str):
@@ -54,38 +47,23 @@ def get_topic(topic_id: int, db: Session = Depends(get_db)):
         for r in topic_ranges:
             topic.available_experience_ranges.append(r.experience_range)
 
-    return {
-        "id": topic.id,
-        "code": topic.code,
-        "classification": topic.classification,
-        "description": topic.description,
-        "published": topic.published,
-        "created_at": topic.created_at,
-        "updated_at": topic.updated_at,
-        "display_names": topic.display_names,
-        "keywords": topic.keywords,
-        "experience_type": topic.experience_type,
-        "available_experience_ranges": topic.available_experience_ranges
-    }
+    return topic
 
 
 
 @router.post("/", response_model=schemas.TopicOut, status_code=201)
 def create_topic(payload: schemas.TopicCreate, db: Session = Depends(get_db)):
     topic = models.Topic(
-        code=payload.code,
-        classification=payload.classification.value,
-        description=payload.description,
-        published=payload.published,
+    code=payload.code,
+    classification=payload.classification.value,
+    description=payload.description,
+    published=payload.published,
+    display_names=payload.display_names,
     )
+
 
     db.add(topic)
     db.flush()
-
-    for dn in payload.display_names:
-        topic.display_names.append(
-            get_or_create_display_name(db, dn.name)
-        )
 
     for kw in payload.keywords:
         topic.keywords.append(
@@ -117,12 +95,9 @@ def update_topic(
             setattr(topic, field, value)
 
 
-    if "display_names" in data and data["display_names"] is not None:
-        topic.display_names.clear()
-        for dn in data["display_names"]:
-            topic.display_names.append(
-                get_or_create_display_name(db, dn["name"])
-            )
+    if "display_names" in data:
+        topic.display_names = data["display_names"]
+
 
     if "keywords" in data and data["keywords"] is not None:
         topic.keywords.clear()

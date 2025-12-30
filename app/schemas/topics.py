@@ -3,12 +3,6 @@ from typing import List, Optional, Literal
 from datetime import datetime
 from app.schemas.enums import ClassificationEnum
 from app.schemas.experience import ExperienceRangeOut
-class TopicDisplayNameCreate(BaseModel):
-    name: str
-
-class TopicDisplayNameOut(BaseModel):
-    id: int
-    name: str
 
 class TopicKeywordCreate(BaseModel):
     keyword: str
@@ -22,14 +16,14 @@ class TopicCreate(BaseModel):
     classification: ClassificationEnum
     description: str
     published: bool = False
-    display_names: List[TopicDisplayNameCreate]
+    display_names: List[str]
     keywords: List[TopicKeywordCreate]
 
 class TopicUpdate(BaseModel):
     classification: Optional[ClassificationEnum] = None
     description: Optional[str] = None
     published: Optional[bool] = None
-    display_names: Optional[List[TopicDisplayNameCreate]] = None
+    display_names: Optional[List[str]] = None
     keywords: Optional[List[TopicKeywordCreate]] = None
 
 class TopicOut(BaseModel):
@@ -40,7 +34,7 @@ class TopicOut(BaseModel):
     published: bool
     created_at: datetime
     updated_at: datetime
-    display_names: List[TopicDisplayNameOut]
+    display_names: List[str]
     keywords: List[TopicKeywordOut]
     experience_type: Literal["any", "specific"]="any"
     available_experience_ranges: list[ExperienceRangeOut]=[]
@@ -53,7 +47,7 @@ class TopicListOut(BaseModel):
     id: int
     code: str
     classification: ClassificationEnum
-    display_names: List[TopicDisplayNameOut]
+    display_names: List[str]
     published: bool
 
     class Config:
