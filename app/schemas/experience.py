@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel
 from typing import List
 
@@ -14,7 +15,7 @@ class TopicExperienceRangeCreate(BaseModel):
 
 class TopicExperienceRangeOut(BaseModel):
     id: int
-    topic_id: int
+    topic_id: UUID
     experience_range_id: int
 
     class Config:

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from uuid import UUID
 from sqlalchemy.orm import Session
 from decimal import Decimal
 from app.schemas import enums
@@ -16,7 +17,7 @@ router = APIRouter(prefix="/adjustments", tags=["adjustments"])
 
 @router.get("/topics/{topic_id}", response_model=TopicAdjustmentsOut)
 def get_topic_adjustments(
-    topic_id: int,
+    topic_id: UUID,
     db: Session = Depends(get_db),
 ):
     topic = db.query(models.Topic).filter(models.Topic.id == topic_id).first()
@@ -43,7 +44,7 @@ def get_topic_adjustments(
 
 @router.put("/topics/{topic_id}/{interview_type}")
 def set_topic_adjustment(
-    topic_id: int,
+    topic_id: UUID,
     interview_type: enums.InterviewTypeEnum,
     payload: AdjustmentCreate,
     db: Session = Depends(get_db),

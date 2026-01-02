@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+
+from uuid import UUID
 from app.schemas.enums import InterviewTypeEnum
 
 
@@ -15,5 +17,5 @@ class AdjustmentCreate(BaseModel):
     adjustment_percentage: float
 
 class TopicAdjustmentsOut(BaseModel):
-    topic_id: int
+    topic_id: UUID
     adjustments: list[AdjustmentOut]

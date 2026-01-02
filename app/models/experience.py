@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, func
+from sqlalchemy import UUID, Column, Integer, String, Boolean, ForeignKey, func
 from sqlalchemy.orm import relationship
 from app.db import Base
 
@@ -17,7 +17,7 @@ class TopicExperienceRange(Base):
     __tablename__ = "topic_experience_ranges"
 
     id = Column(Integer, primary_key=True)
-    topic_id = Column(Integer, ForeignKey("topics.id", ondelete="CASCADE"), nullable=False)
+    topic_id = Column(UUID(as_uuid=True), ForeignKey("topics.id", ondelete="CASCADE"), nullable=False)
     experience_range_id = Column(Integer, ForeignKey("experience_ranges.id",ondelete="CASCADE"), nullable=False)
     
     topic = relationship("Topic", back_populates="experience_ranges",passive_deletes=True)

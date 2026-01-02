@@ -19,6 +19,11 @@ Base = declarative_base()
 def get_db():
     db = SessionLocal()
     try:
+        # print("before yield")
         yield db
+        # print("after yield")
     finally:
+        # print("before db close")
         db.close()
+        # print("after db close")
+

@@ -1,11 +1,12 @@
+from uuid import UUID
 from pydantic import BaseModel
 from typing import List, Optional, Literal
 from datetime import datetime
 from app.schemas.enums import ClassificationEnum
 from app.schemas.experience import ExperienceRangeOut
 
-class TopicKeywordCreate(BaseModel):
-    keyword: str
+# class TopicKeywordCreate(BaseModel):
+#     keyword: str
 
 class TopicKeywordOut(BaseModel):
     id: int
@@ -17,17 +18,17 @@ class TopicCreate(BaseModel):
     description: str
     published: bool = False
     display_names: List[str]
-    keywords: List[TopicKeywordCreate]
+    keywords: List[str]
 
 class TopicUpdate(BaseModel):
     classification: Optional[ClassificationEnum] = None
     description: Optional[str] = None
     published: Optional[bool] = None
     display_names: Optional[List[str]] = None
-    keywords: Optional[List[TopicKeywordCreate]] = None
+    keywords: Optional[List[str]] = None
 
 class TopicOut(BaseModel):
-    id: int
+    id: UUID
     code: str
     classification: ClassificationEnum
     description: str
@@ -44,7 +45,7 @@ class TopicOut(BaseModel):
         from_attributes = True
 
 class TopicListOut(BaseModel):
-    id: int
+    id: UUID
     code: str
     classification: ClassificationEnum
     display_names: List[str]
@@ -52,3 +53,9 @@ class TopicListOut(BaseModel):
 
     class Config:
         from_attributes = True
+#extra endpoint schemas
+class TopicBulkCreate(BaseModel):
+    topics:List[TopicCreate]
+
+class BulkDelete(BaseModel):
+    topic_ids:List[UUID]

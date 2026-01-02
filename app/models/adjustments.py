@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func
+from sqlalchemy import UUID, Column, Integer, String, Numeric, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 from app.db import Base
 
@@ -6,7 +6,7 @@ class PremiumTopicAdjustment(Base):
     __tablename__ = "premium_topic_adjustments"
 
     id = Column(Integer, primary_key=True)
-    topic_id = Column(Integer, ForeignKey("topics.id", ondelete="CASCADE"), nullable=False)
+    topic_id = Column(UUID(as_uuid=True), ForeignKey("topics.id", ondelete="CASCADE"), nullable=False)
     interview_type = Column(String(30), nullable=False)  
     adjustment_percentage = Column(Numeric(8, 2), default=0)  
     

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from uuid import UUID
 
 from app.db import get_db
 from app import models
@@ -21,10 +21,21 @@ def list_experience_ranges(db: Session = Depends(get_db)):
         .all()
     )
 
+@router.get("/topics/{topic_id}")
+def topic_experiece_ranges(
+    topic_id:UUID,
+    db:Session=Depends(get_db)
+):
+    topic=db.query(models.Topic).filter(models.Topic.id==topic_id).first()
+    if not topic:
+        raise HTTPException(status_code=404, detail="Topic not found")
+    return topic.experience_ranges
+    
+
 
 @router.put("/topics/{topic_id}", response_model=list[TopicExperienceRangeOut])
 def update_topic_experience_ranges(
-    topic_id: int,
+    topic_id: UUID,
     payload: TopicExperienceRangesUpdate,
     db: Session = Depends(get_db),
 ):

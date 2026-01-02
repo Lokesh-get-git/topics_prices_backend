@@ -1,10 +1,12 @@
 from pydantic import BaseModel
 from typing import Optional
+
+from uuid import UUID
 from app.schemas.enums import InterviewTypeEnum
 
 
 class PriceCalculationInput(BaseModel):
-    topic_id: int
+    topic_id: UUID
     interview_type: InterviewTypeEnum  
     experience_level_id: int
     duration_mins: Optional[int] = None  
